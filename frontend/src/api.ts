@@ -1,4 +1,4 @@
-import type { HighscoreEntry, Rank, SearchResult, SkinsDB, SortColumn, SortOrder } from "./types";
+import type { HighscoreEntry, Rank, SkinsDB, SortColumn, SortOrder } from "./types";
 
 async function get<T>(url: string): Promise<T> {
 	const res = await fetch(url);
@@ -21,6 +21,3 @@ export function getSkinsDB(): Promise<SkinsDB> {
 	return get("api/skinsdb");
 }
 
-export function searchPlayer(name: string): Promise<SearchResult[]> {
-	return get(`api/searchplayer?${new URLSearchParams({ name })}`);
-}

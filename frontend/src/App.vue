@@ -1,16 +1,12 @@
+<script setup lang="ts">
+import HighscoreView from "./views/HighscoreView.vue";
+</script>
+
 <template>
 	<nav class="navbar navbar-dark bg-dark navbar-expand mb-3 px-3">
-		<RouterLink class="navbar-brand" to="/highscore">Pandorabox Highscore</RouterLink>
-		<ul class="navbar-nav">
-			<li class="nav-item">
-				<RouterLink class="nav-link" active-class="active" to="/highscore">Highscore</RouterLink>
-			</li>
-			<li class="nav-item">
-				<RouterLink class="nav-link" active-class="active" to="/search">Search</RouterLink>
-			</li>
-		</ul>
+		<span class="navbar-brand">Pandorabox Highscore</span>
 	</nav>
 	<div class="container-fluid">
-		<RouterView />
+		<HighscoreView />
 	</div>
 </template>

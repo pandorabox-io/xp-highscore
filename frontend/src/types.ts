@@ -17,13 +17,6 @@ export interface HighscoreEntry {
 	attributes: PlayerAttributes;
 }
 
-export interface SearchResult {
-	name: string;
-	creation_date: string;
-	modification_date: string;
-	xp: string;
-}
-
 export interface Rank {
 	name: string;
 	xp: number;

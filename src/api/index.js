@@ -1,5 +1,4 @@
 require("./highscore");
-require("./searchplayer");
 require("./playerinfo");
 require("./ranks");
 require("./skinsdb");
