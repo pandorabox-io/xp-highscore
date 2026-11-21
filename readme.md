@@ -1,15 +1,15 @@
 
 xp highscore board
 
-![](https://github.com/BuckarooBanzay/xp-highscore/workflows/test/badge.svg)
-![](https://github.com/BuckarooBanzay/xp-highscore/workflows/docker/badge.svg)
+![](https://github.com/pandorabox-io/xp-highscore/workflows/test/badge.svg)
+![](https://github.com/pandorabox-io/xp-highscore/workflows/docker/badge.svg)
 
 
 # Overview
 
 TBD
 
-* Docker-image: `buckaroobanzay/xphighscore`
+* Docker-image: `ghcr.io/pandorabox-io/xp-highscore`
 
 ```bash
 export PGHOST=127.0.0.1
