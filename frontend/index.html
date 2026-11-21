@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#000">
     <title>Highscore</title>
+    <script>
+      // set theme before first paint to avoid a flash of the wrong theme
+      (function () {
+        var mode = null;
+        try { mode = localStorage.getItem("theme"); } catch (e) {}
+        var dark = mode === "dark" || (mode !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+        document.documentElement.setAttribute("data-bs-theme", dark ? "dark" : "light");
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>
