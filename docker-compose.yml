@@ -1,0 +1,37 @@
+# local testing setup
+# usage: docker compose up --build
+# app: http://127.0.0.1:8080
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: enter
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      # *.sql files are imported on first startup (empty data directory)
+      - ./test-data:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 20
+
+  xp-highscore:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGUSER: postgres
+      PGPASSWORD: enter
+      PGDATABASE: postgres
+      PGPORT: 5432
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./world:/data/world:ro

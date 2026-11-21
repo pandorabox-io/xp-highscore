@@ -19,3 +19,18 @@ export PGPASSWORD=enter
 export PGPORT=5432
 
 ```
+
+# Local testing
+
+Starts a postgres database seeded with test data (`test-data/*.sql`) and the app:
+
+```bash
+docker compose up --build
+# open http://127.0.0.1:8080
+```
+
+The test data is imported only when the database is empty. To reset and re-import it:
+
+```bash
+docker compose down -v
+```
