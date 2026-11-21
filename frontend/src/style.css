@@ -1,0 +1,7 @@
+.player-img {
+	image-rendering: pixelated;
+}
+
+th {
+	white-space: nowrap;
+}

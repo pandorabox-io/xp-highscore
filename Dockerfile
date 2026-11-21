@@ -1,25 +1,24 @@
-# Stage 1 testing
-FROM node:16.3.0-alpine
-
-COPY .jshintrc /data/
-COPY package.json /data/
-COPY package-lock.json /data/
-COPY src /data/src
-COPY public /data/public
-
-RUN cd /data && npm i && npm test
-
-# Stage 2 package
-FROM node:16.3.0-alpine
-
-COPY package.json /data/
-COPY package-lock.json /data/
-COPY src /data/src
-COPY public /data/public
-
-RUN cd /data && npm i --only=production
+# Stage 1: test and build frontend
+FROM node:24-alpine AS build
 
 WORKDIR /data
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY .jshintrc tsconfig.json vite.config.ts ./
+COPY src src
+COPY frontend frontend
+RUN npm test && npm run build
+
+# Stage 2: package
+FROM node:24-alpine
+
+WORKDIR /data
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev
+
+COPY src src
+COPY --from=build /data/dist dist
 
 EXPOSE 8080
 
