@@ -19,7 +19,7 @@ export const themeMode = ref<ThemeMode>(loadMode());
 
 function apply() {
 	const dark = themeMode.value === "dark" || (themeMode.value === "auto" && media.matches);
-	document.documentElement.setAttribute("data-bs-theme", dark ? "dark" : "light");
+	document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
 }
 
 watch(themeMode, mode => {

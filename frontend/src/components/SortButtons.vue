@@ -3,6 +3,7 @@ import type { SortColumn, SortOrder } from "#shared/types.ts";
 
 const props = defineProps<{
 	column: SortColumn;
+	label: string;
 	sort: SortColumn;
 	order: SortOrder;
 }>();
@@ -11,19 +12,49 @@ const emit = defineEmits<{
 	change: [column: SortColumn, order: SortOrder];
 }>();
 
-function btnClass(order: SortOrder): string {
-	const active = props.sort === props.column && props.order === order;
-	return active ? "btn btn-sm btn-primary" : "btn btn-sm btn-secondary";
+// first click sorts descending, clicking the active column flips the order
+function toggle() {
+	const active = props.sort === props.column;
+	emit("change", props.column, active && props.order === "desc" ? "asc" : "desc");
 }
 </script>
 
 <template>
-	<div class="btn-group ms-1">
-		<button :class="btnClass('desc')" title="Descending" @click="emit('change', column, 'desc')">
-			<i class="fas fa-sort-amount-up"></i>
-		</button>
-		<button :class="btnClass('asc')" title="Ascending" @click="emit('change', column, 'asc')">
-			<i class="fas fa-sort-amount-down"></i>
-		</button>
-	</div>
+	<button
+		type="button"
+		:class="{ active: sort === column }"
+		:aria-label="`Sort by ${label}`"
+		@click="toggle"
+	>
+		{{ label }}<span class="arrow">{{ sort === column && order === "asc" ? "↑" : "↓" }}</span>
+	</button>
 </template>
+
+<style scoped>
+button {
+	white-space: nowrap;
+	color: inherit;
+}
+
+button:hover,
+button.active {
+	color: var(--fg);
+}
+
+.arrow {
+	display: inline-block;
+	width: 1em;
+	margin-left: 2px;
+	visibility: hidden;
+}
+
+button:hover .arrow {
+	visibility: visible;
+	opacity: 0.4;
+}
+
+button.active .arrow {
+	visibility: visible;
+	opacity: 1;
+}
+</style>

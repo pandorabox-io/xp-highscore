@@ -4,13 +4,33 @@ import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 </script>
 
 <template>
-	<nav class="navbar navbar-dark bg-dark navbar-expand mb-3 px-3">
-		<span class="navbar-brand">Pandorabox Highscore</span>
-		<div class="ms-auto">
+	<main class="page">
+		<header class="header">
+			<h1>Pandorabox <span>Highscore</span></h1>
 			<ThemeSwitcher />
-		</div>
-	</nav>
-	<div class="container-fluid">
+		</header>
 		<HighscoreView />
-	</div>
+	</main>
 </template>
+
+<style scoped>
+.header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 16px;
+	margin-bottom: 32px;
+}
+
+h1 {
+	margin: 0;
+	font-size: 22px;
+	font-weight: 600;
+	letter-spacing: -0.01em;
+}
+
+h1 span {
+	color: var(--muted);
+	font-weight: 400;
+}
+</style>

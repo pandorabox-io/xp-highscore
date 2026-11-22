@@ -12,8 +12,24 @@ const rank = computed(() => getRank(props.ranks, props.xp));
 </script>
 
 <template>
-	<span v-if="rank" class="text-nowrap">
-		<img :src="`api/texture/${rank.icon}`" :alt="rank.name">
-		<span class="ms-1" :style="{ color: rankColor(rank) }">{{ rank.name }}</span>
+	<span v-if="rank" class="rank" :style="{ '--rank': rankColor(rank) }">
+		<img class="pixelated" :src="`api/texture/${rank.icon}`" alt="">
+		{{ rank.name }}
 	</span>
 </template>
+
+<style scoped>
+.rank {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	white-space: nowrap;
+	/* blend the rank color with the text color so light ranks stay readable on light backgrounds */
+	color: color-mix(in oklab, var(--rank) 65%, var(--fg));
+}
+
+img {
+	width: 16px;
+	height: 16px;
+}
+</style>
