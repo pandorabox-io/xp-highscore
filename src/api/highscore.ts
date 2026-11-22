@@ -25,19 +25,22 @@ const SORT: Record<SortColumn, { attr: string; orderColumn: string }> = {
 	joined: { attr: "xp", orderColumn: "p.creation_date" }
 };
 
+// upper bound for the paging offset, avoids huge offsets and full table scans
+const MAX_OFFSET = 10000;
+
 app.get("/api/highscore", async (req: Request, res: Response<HighscoreEntry[]>) => {
-	const offset = Math.max(parseInt(String(req.query.start)) || 0, 0);
+	const offset = Math.min(Math.max(parseInt(String(req.query.start)) || 0, 0), MAX_OFFSET);
 	const sortOrder: SortOrder = req.query.order === "asc" ? "asc" : "desc";
 	const sort = SORT[isSortColumn(req.query.sort) ? req.query.sort : "xp"];
 
-	// orderColumn and sortOrder come from the whitelist above, offset is a number
+	// orderColumn and sortOrder come from the whitelist above
 	const query = `select p.name, p.modification_date, p.creation_date from player p
 		join player_metadata md on p.name = md.player
 		where md.attr = $1
 		and p.modification_date > (NOW() - interval '1 month')
-		order by ${sort.orderColumn} ${sortOrder} limit 10 offset ${offset}`;
+		order by ${sort.orderColumn} ${sortOrder} limit 10 offset $2`;
 
-	const result = await pool.query<PlayerRow>(query, [sort.attr]);
+	const result = await pool.query<PlayerRow>(query, [sort.attr, offset]);
 
 	const score = await Promise.all(result.rows.map(async (row): Promise<HighscoreEntry> => ({
 		name: row.name,
