@@ -24,12 +24,16 @@ export PGPORT=5432
 
 Frontend: Vue 3 + TypeScript (vite), sources in `frontend/`, built into `dist/` which is served by the express backend in `src/`.
 
+Backend: TypeScript, executed directly by node (native type stripping, no build step). Only erasable syntax is allowed (no `enum`, `namespace` or parameter properties).
+
+Types shared by backend and frontend (the API contract) live in `shared/` and are imported via `#shared/types.ts`.
+
 ```bash
 npm ci
 npm run build   # build the frontend into dist/
 npm start       # backend on :8080 (needs the PG* env vars above)
 npm run dev     # vite dev server with hot reload, proxies /api to :8080
-npm test        # jshint (backend) + vue-tsc (frontend)
+npm test        # typecheck backend (tsc) and frontend (vue-tsc)
 ```
 
 # Local testing

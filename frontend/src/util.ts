@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
 import relativeTime from "dayjs/plugin/relativeTime";
-import type { Rank } from "./types";
+import type { Rank } from "#shared/types.ts";
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);

@@ -5,8 +5,9 @@ WORKDIR /data
 COPY package.json package-lock.json ./
 RUN npm ci
 
-COPY .jshintrc tsconfig.json vite.config.ts ./
+COPY tsconfig.json tsconfig.server.json vite.config.ts ./
 COPY src src
+COPY shared shared
 COPY frontend frontend
 RUN npm test && npm run build
 
@@ -18,8 +19,9 @@ COPY package.json package-lock.json ./
 RUN npm ci --omit=dev
 
 COPY src src
+COPY shared shared
 COPY --from=build /data/dist dist
 
 EXPOSE 8080
 
-CMD ["node", "src/index.js"]
+CMD ["node", "src/index.ts"]

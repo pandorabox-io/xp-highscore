@@ -6,5 +6,5 @@
     "noUnusedParameters": true,
     "types": ["vite/client"]
   },
-  "include": ["frontend/src/**/*.ts", "frontend/src/**/*.vue", "vite.config.ts"]
+  "include": ["shared/**/*.ts", "frontend/src/**/*.ts", "frontend/src/**/*.vue", "vite.config.ts"]
 }

@@ -3,7 +3,8 @@ import { onMounted, onUnmounted, ref } from "vue";
 import SortButtons from "../components/SortButtons.vue";
 import RankLabel from "../components/RankLabel.vue";
 import { getHighscore, getRanks, getSkinsDB } from "../api";
-import type { HighscoreEntry, Rank, SkinsDB, SortColumn, SortOrder } from "../types";
+import { SORT_COLUMNS } from "#shared/types.ts";
+import type { HighscoreEntry, Rank, SkinsDB, SortColumn, SortOrder } from "#shared/types.ts";
 import {
 	humanizeMs, humanizeSeconds, msSince, numberWithCommas, playerImage
 } from "../util";
@@ -19,22 +20,19 @@ const sort = ref<SortColumn>("xp");
 const order = ref<SortOrder>("desc");
 const busy = ref(false);
 
-const columns: { label: string; sort?: SortColumn }[] = [
-	{ label: "Ranking" },
-	{ label: "Name" },
-	{ label: "XP", sort: "xp" },
-	{ label: "Rank" },
-	{ label: "Dig-count", sort: "digged_nodes" },
-	{ label: "Craft-count", sort: "crafted" },
-	{ label: "Build-count", sort: "placed_nodes" },
-	{ label: "Death-count", sort: "died" },
-	{ label: "Punch-count", sort: "punch_count" },
-	{ label: "Inflicted damage", sort: "inflicted_damage" },
-	{ label: "Play-time", sort: "played_time" },
-	{ label: "Joined", sort: "joined" },
-	{ label: "Last login", sort: "online" },
-	{ label: "Status" }
-];
+// header label and cell text of each sortable column, rendered in SORT_COLUMNS order
+const sortColumns: Record<SortColumn, { label: string; cell: (p: HighscoreEntry) => string }> = {
+	xp: { label: "XP", cell: p => numberWithCommas(p.attributes.xp) },
+	digged_nodes: { label: "Dig-count", cell: p => numberWithCommas(p.attributes.digged_nodes) },
+	crafted: { label: "Craft-count", cell: p => numberWithCommas(p.attributes.crafted) },
+	placed_nodes: { label: "Build-count", cell: p => numberWithCommas(p.attributes.placed_nodes) },
+	died: { label: "Death-count", cell: p => p.attributes.died ?? "" },
+	punch_count: { label: "Punch-count", cell: p => numberWithCommas(p.attributes.punch_count) },
+	inflicted_damage: { label: "Inflicted damage", cell: p => numberWithCommas(p.attributes.inflicted_damage) },
+	played_time: { label: "Play-time", cell: p => humanizeSeconds(p.attributes.played_time) },
+	joined: { label: "Joined", cell: p => humanizeMs(msSince(p.created)) },
+	online: { label: "Last login", cell: p => humanizeMs(msSince(p.modified)) }
+};
 
 async function update() {
 	busy.value = true;
@@ -105,16 +103,21 @@ onUnmounted(() => timers.forEach(clearInterval));
 			<table class="table table-sm table-striped align-middle">
 				<thead>
 					<tr>
-						<th v-for="col in columns" :key="col.label">
-							{{ col.label }}
-							<SortButtons
-								v-if="col.sort"
-								:column="col.sort"
-								:sort="sort"
-								:order="order"
-								@change="changeSort"
-							/>
-						</th>
+						<th>Ranking</th>
+						<th>Name</th>
+						<template v-for="col in SORT_COLUMNS" :key="col">
+							<th>
+								{{ sortColumns[col].label }}
+								<SortButtons
+									:column="col"
+									:sort="sort"
+									:order="order"
+									@change="changeSort"
+								/>
+							</th>
+							<th v-if="col === 'xp'">Rank</th>
+						</template>
+						<th>Status</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -128,20 +131,14 @@ onUnmounted(() => timers.forEach(clearInterval));
 							<img class="player-img" :src="playerImage(skins, player.name)" :alt="player.name">
 							{{ player.name }}
 						</td>
-						<td><span class="badge bg-info text-dark">{{ numberWithCommas(player.attributes.xp) }}</span></td>
-						<td><RankLabel :ranks="ranks" :xp="player.attributes.xp" /></td>
-						<td>{{ numberWithCommas(player.attributes.digged_nodes) }}</td>
-						<td>{{ numberWithCommas(player.attributes.crafted) }}</td>
-						<td>{{ numberWithCommas(player.attributes.placed_nodes) }}</td>
-						<td>{{ player.attributes.died }}</td>
-						<td>{{ numberWithCommas(player.attributes.punch_count) }}</td>
-						<td>{{ numberWithCommas(player.attributes.inflicted_damage) }}</td>
-						<td>{{ humanizeSeconds(player.attributes.played_time) }}</td>
-						<td>{{ humanizeMs(msSince(player.created)) }}</td>
-						<td>
-							{{ humanizeMs(msSince(player.modified)) }}
-							<span v-if="isInactive(player)" class="badge bg-secondary">Inactive</span>
-						</td>
+						<template v-for="col in SORT_COLUMNS" :key="col">
+							<td>
+								<span v-if="col === 'xp'" class="badge bg-info text-dark">{{ sortColumns[col].cell(player) }}</span>
+								<template v-else>{{ sortColumns[col].cell(player) }}</template>
+								<span v-if="col === 'online' && isInactive(player)" class="badge bg-secondary">Inactive</span>
+							</td>
+							<td v-if="col === 'xp'"><RankLabel :ranks="ranks" :xp="player.attributes.xp" /></td>
+						</template>
 						<td>
 							<span v-if="isOnline(player)" class="badge bg-success">Online</span>
 							<span v-else class="badge bg-danger">Offline</span>

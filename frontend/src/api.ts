@@ -1,4 +1,4 @@
-import type { HighscoreEntry, Rank, SkinsDB, SortColumn, SortOrder } from "./types";
+import type { HighscoreEntry, Rank, SkinsDB, SortColumn, SortOrder } from "#shared/types.ts";
 
 async function get<T>(url: string): Promise<T> {
 	const res = await fetch(url);

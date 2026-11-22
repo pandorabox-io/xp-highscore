@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import type { Rank } from "../types";
+import type { Rank } from "#shared/types.ts";
 import { getRank, rankColor } from "../util";
 
 const props = defineProps<{

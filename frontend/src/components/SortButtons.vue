@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { SortColumn, SortOrder } from "../types";
+import type { SortColumn, SortOrder } from "#shared/types.ts";
 
 const props = defineProps<{
 	column: SortColumn;
