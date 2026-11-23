@@ -1,5 +1,5 @@
 # Stage 1: test and build frontend
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 
 WORKDIR /data
 COPY package.json package-lock.json ./
@@ -12,7 +12,7 @@ COPY frontend frontend
 RUN npm test && npm run build
 
 # Stage 2: package
-FROM node:24-alpine
+FROM node:26-alpine
 
 ENV NODE_ENV=production
 WORKDIR /data
