@@ -29,7 +29,7 @@
     "@types/node": "^24.19.2",
     "@types/pg": "^8.23.1",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vue/tsconfig": "^0.8.0",
+    "@vue/tsconfig": "^0.9.1",
     "dayjs": "^1.11.0",
     "typescript": "^5.9.0",
     "vite": "^7.0.0",
